@@ -44,7 +44,7 @@ came through the form have this cause. The parser fix does not touch it: the fix
 **`one-day`: the date moves by one day, not by a swapped month.** "Tuesday 12 May. Calendar
 says Monday 11 May." "Client in Lisbon got Tuesday. Client in Toronto got Monday." The desk
 already read these as a one-day move (desk-notes.json) and still filed them under `parser` by
-tenant. No month flips, so neither the parser fix nor the hint fix touches them. It looks like a
+tenant, where they are still counted. No month flips, so neither the parser fix nor the hint fix touches them. It looks like a
 time zone or midnight conversion bug.
 
 ## How these were counted
@@ -53,7 +53,8 @@ time zone or midnight conversion bug.
   by id.
 - The cause comes from the tenant: its locale and its booking form (`causes.ts`). The intake
   tag is a guess from the reporter's browser and is not used.
-- Reports the desk read as a one-day move (`desk-notes.json`) are counted on their own.
+- Reports the desk read as a one-day move (`desk-notes.json`) have a ticket of their own, and stay
+  counted under the cause the desk files them by, with a footnote: the desk's own view.
 
 ## Lessons
 
