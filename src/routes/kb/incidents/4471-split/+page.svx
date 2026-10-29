@@ -1,0 +1,64 @@
+---
+layout: runbook
+title: '#4471 split: three problems, not one'
+owner: Adam Jasiński
+status: proposed
+reviewed: 2026-10-29
+signature: v1.eyJzdWIiOiIxMDEzNSIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaWF0IjoxNzkzMjk2MzE0LCJleHAiOjE3OTMzODI3MTR9.McjOYszbj_52tNjuNc-fEMmBw1w3BLSSSt8DGVcSd94
+---
+
+<script>
+  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/jasinskiadam/mega-s01e03-support-kb/issues';
+  const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) holds every report about dates that came in from April to 4 October.
+The desk merged them by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject))
+and marked the ticket known: one bug, one fix queued. Read by cause instead of by subject, the
+same reports hold three problems. One fix closes only one of them.
+
+<Callout kind="warn">
+The parser fix queued for #4471 leaves two problems open. Each now has a ticket of its own.
+</Callout>
+
+## The split
+
+<SplitTable ticket={4471} {tickets} />
+
+## The three problems
+
+**`parser`: the shared parser reads every date month first.** Tenants whose locale writes the
+day first get the month and day swapped: a booking for 7 April goes out on 4 July. This is the
+bug #4471 names, and the queued fix is for it.
+
+**`hint`: the booking-v3 form prints `MM/DD/YYYY` under its date field.** Tenants on
+booking-v3 in day-first locales (Alder Physio, Copper Studio, Pale Harbour) get people who
+type what the hint says, month first, and the form reads it the tenant's way. Only reports that
+came through the form have this cause. The parser fix does not touch it: the fix is the hint
+(or reading the field the way the hint asks).
+
+**`one-day`: the date moves by one day, not by a swapped month.** "Tuesday 12 May. Calendar
+says Monday 11 May." "Client in Lisbon got Tuesday. Client in Toronto got Monday." The desk
+already read these as a one-day move (desk-notes.json) and still filed them under `parser` by
+tenant. No month flips, so neither the parser fix nor the hint fix touches them. It looks like a
+time zone or midnight conversion bug.
+
+## How these were counted
+
+- The export comes in pages that overlap, so some reports appear twice. A report counts once,
+  by id.
+- The cause comes from the tenant: its locale and its booking form (`causes.ts`). The intake
+  tag is a guess from the reporter's browser and is not used.
+- Reports the desk read as a one-day move (`desk-notes.json`) are counted on their own.
+
+## Lessons
+
+- Merging by subject line counts reports, not causes. A known ticket can hold bugs nobody is
+  fixing.
+- Count from the data at render time, so the page stays right when the queue moves.
+
+<RenderStamp {signature} />
