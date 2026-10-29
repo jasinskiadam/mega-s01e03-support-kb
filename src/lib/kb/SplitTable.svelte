@@ -5,7 +5,8 @@
   import { uniqueById, type Report } from '#lib/kb/causes';
 
   // tickets: problem → link to the ticket filed for it.
-  let { ticket, tickets = {} }: { ticket: number; tickets?: Record<string, string> } = $props();
+  // status: problem → what engineering did with it.
+  let { ticket, tickets = {}, status = {} }: { ticket: number; tickets?: Record<string, string>; status?: Record<string, string> } = $props();
 
   const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
   const rows = $derived(splitTicket(reports as Report[], ticket, notes.oneDayMove));
@@ -17,7 +18,7 @@
 </p>
 
 <table>
-  <thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>ticket</th></tr></thead>
+  <thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>ticket</th><th>status</th></tr></thead>
   <tbody>
     {#each rows as r (r.problem)}
       <tr>
@@ -26,6 +27,7 @@
         <td>{r.tenants}</td>
         <td>{r.firstSeen} → {r.lastSeen}</td>
         <td>{#if tickets[r.problem]}<a href={tickets[r.problem]}>{ticketNo(tickets[r.problem])}</a>{:else}none yet{/if}</td>
+        <td>{status[r.problem] ?? 'open'}</td>
       </tr>
     {/each}
   </tbody>

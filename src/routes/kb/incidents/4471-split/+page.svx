@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 split: three problems, not one'
 owner: Adam Jasiński
-status: proposed
+status: open
 reviewed: 2026-10-29
 signature: v1.eyJzdWIiOiIxMDEzNSIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaWF0IjoxNzkzMjk2MzE0LCJleHAiOjE3OTMzODI3MTR9.McjOYszbj_52tNjuNc-fEMmBw1w3BLSSSt8DGVcSd94
 ---
@@ -14,6 +14,7 @@ signature: v1.eyJzdWIiOiIxMDEzNSIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaW
 
   const repo = 'https://github.com/jasinskiadam/mega-s01e03-support-kb/issues';
   const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
+  const status = { parser: 'fixed (per engineering, 5 Oct)', hint: "won't fix (form retired)", 'one-day': 'open, no fix reported' };
 </script>
 
 [#4471](/kb/incidents/4471) holds every report about dates that came in from April to 4 October.
@@ -22,12 +23,14 @@ and marked the ticket known: one bug, one fix queued. Read by cause instead of b
 same reports hold three problems. One fix closes only one of them.
 
 <Callout kind="warn">
-The parser fix queued for #4471 leaves two problems open. Each now has a ticket of its own.
+Engineering closed #4471 on 5 October: the parser is fixed and the hint won't be fixed, because
+the booking-v3 form is retired. Engineering's update does not mention the one-day move, so its
+ticket stays open.
 </Callout>
 
 ## The split
 
-<SplitTable ticket={4471} {tickets} />
+<SplitTable ticket={4471} {tickets} {status} />
 
 ## The three problems
 
@@ -46,6 +49,17 @@ says Monday 11 May." "Client in Lisbon got Tuesday. Client in Toronto got Monday
 already read these as a one-day move (desk-notes.json) and still filed them under `parser` by
 tenant, where they are still counted. No month flips, so neither the parser fix nor the hint fix touches them. It looks like a
 time zone or midnight conversion bug.
+
+## Outcome
+
+From engineering's update of 5 October. This page has not checked the fix against new reports:
+the export ends on 4 October.
+
+- `parser`: fixed, `fix(dates): parse dd/mm for eu locales`. Ticket closed as completed.
+- `hint`: won't fix, the booking-v3 form is retired. Ticket closed as not planned.
+- `one-day`: not in the update. Nobody has fixed it or decided not to, so its ticket stays open.
+  It is a different mechanism (time zone or midnight conversion), so the parser fix may not
+  cover it.
 
 ## How these were counted
 
